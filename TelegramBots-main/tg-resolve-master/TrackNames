@@ -1,0 +1,26 @@
+import asyncio
+from telegram import Bot
+from telegram.error import TelegramError
+
+# Initialize the bot with your bot token
+bot = Bot("6913097233:AAFFwqUo-4CQNxDIoSpRQLGsFehzDosC_Tk")
+
+async def get_usernames(user_ids):
+    usernames = {}
+    for user_id in user_ids:
+        try:
+            chat = await bot.get_chat(user_id)
+            # Attempt to get username, if not available, use first name
+            usernames[user_id] = chat.username if chat.username else chat.first_name
+        except TelegramError as e:
+            print(f"Failed to fetch details for {user_id}: {str(e)}")
+            usernames[user_id] = None
+    return usernames
+
+async def main():
+    user_ids = [5000788240]  # Replace with your actual user IDs
+    usernames = await get_usernames(user_ids)
+    print(usernames)
+
+if __name__ == '__main__':
+    asyncio.run(main())
